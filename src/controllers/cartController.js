@@ -13,20 +13,55 @@ exports.getCartItems = async (req, res) => {
 
 // Function to add a new item to the cart
 exports.addToCart = async (req, res) => {
-  try {
-    const newProduct = new Cart({
-      name: req.body.name,
-      img: req.body.img,
-      price: req.body.price,
-      quantity: req.body.quantity,
-    });
+  const { productId, name, price, quantity } = req.body;
 
-    await newProduct.save();
-    res.send(newProduct);
+  try {
+    // Verificar se o produto já existe no carrinho
+    const existingCartItem = await Cart.findOne({ productId });
+
+    if (existingCartItem) {
+      // Atualizar a quantidade do produto existente
+      existingCartItem.quantity += quantity;
+      await existingCartItem.save();
+    } else {
+      // Adicionar novo produto ao carrinho
+      const newCartItem = new Cart({ productId, name, price, quantity });
+      await newCartItem.save();
+    }
+
+    // Obter o carrinho atualizado
+    const updatedCart = await Cart.find().populate("productId");
+    res.status(200).json(updatedCart);
   } catch (error) {
-    res.status(500).send({ error: "Failed to add item to cart" });
+    res.status(500).json({ error: error.message });
   }
 };
+
+exports.updateCartQuantity = async (req, res) => {
+  const { productId, quantity } = req.body;
+
+  try {
+    // Verificar se o produto existe no carrinho
+    const existingCartItem = await Cart.findOne({ productId });
+
+    if (existingCartItem) {
+      // Atualizar a quantidade do produto existente
+      existingCartItem.quantity = quantity;
+      await existingCartItem.save();
+      res.status(200).json(existingCartItem);
+    } else {
+      res.status(404).json({ error: "Product not found in cart" });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// app.post('/api/cart', (req, res) => {
+//   const product = req.body;
+//   cart.push(product);
+//   res.status(200).json(cart);
+// });
 
 // Function to remove an item from the cart
 exports.removeFromCart = async (req, res) => {
@@ -52,4 +87,5 @@ module.exports = {
   getCartItems: exports.getCartItems,
   addToCart: exports.addToCart,
   removeFromCart: exports.removeFromCart,
+  updateCartQuantity: exports.updateCartQuantity,
 };
