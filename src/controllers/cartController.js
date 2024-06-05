@@ -13,7 +13,7 @@ exports.getCartItems = async (req, res) => {
 
 // Function to add a new item to the cart
 exports.addToCart = async (req, res) => {
-  const { productId, name, price, quantity } = req.body;
+  const { id, productId, name, price, quantity } = req.body;
 
   try {
     // Verificar se o produto já existe no carrinho
