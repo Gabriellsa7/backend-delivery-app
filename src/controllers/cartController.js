@@ -13,23 +13,30 @@ exports.getCartItems = async (req, res) => {
 
 // Function to add a new item to the cart
 exports.addToCart = async (req, res) => {
-  const { id, productId, name, price, quantity } = req.body;
+  const { id, img, productId, name, price, quantity } = req.body;
 
   try {
-    // Verificar se o produto já existe no carrinho
+    // Check if the product exists in the cart
     const existingCartItem = await Cart.findOne({ productId });
 
     if (existingCartItem) {
-      // Atualizar a quantidade do produto existente
+      // Update existing product quantity
       existingCartItem.quantity += quantity;
       await existingCartItem.save();
     } else {
-      // Adicionar novo produto ao carrinho
-      const newCartItem = new Cart({ productId, name, price, quantity });
+      // Add new product to cart
+      const newCartItem = new Cart({
+        id: productId,
+        productId,
+        name,
+        price,
+        quantity,
+        img,
+      });
       await newCartItem.save();
     }
 
-    // Obter o carrinho atualizado
+    // Get the updated cart
     const updatedCart = await Cart.find().populate("productId");
     res.status(200).json(updatedCart);
   } catch (error) {
@@ -41,11 +48,11 @@ exports.updateCartQuantity = async (req, res) => {
   const { productId, quantity } = req.body;
 
   try {
-    // Verificar se o produto existe no carrinho
+    // Check if the product exists in the cart
     const existingCartItem = await Cart.findOne({ productId });
 
     if (existingCartItem) {
-      // Atualizar a quantidade do produto existente
+      // Update existing product quantity
       existingCartItem.quantity = quantity;
       await existingCartItem.save();
       res.status(200).json(existingCartItem);
@@ -56,14 +63,6 @@ exports.updateCartQuantity = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// app.post('/api/cart', (req, res) => {
-//   const product = req.body;
-//   cart.push(product);
-//   res.status(200).json(cart);
-// });
-
-// Function to remove an item from the cart
 exports.removeFromCart = async (req, res) => {
   try {
     const { id } = req.params; // Get the item ID from the request parameters
