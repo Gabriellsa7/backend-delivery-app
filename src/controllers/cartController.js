@@ -13,7 +13,7 @@ exports.getCartItems = async (req, res) => {
 
 // Function to add a new item to the cart
 exports.addToCart = async (req, res) => {
-  const { id, img, productId, name, price, quantity } = req.body;
+  const { img, productId, name, price, quantity, discountPrice } = req.body;
 
   try {
     // Check if the product exists in the cart
@@ -31,7 +31,8 @@ exports.addToCart = async (req, res) => {
         name,
         price,
         quantity,
-        img,
+        img: JSON.stringify(img),
+        discountPrice,
       });
       await newCartItem.save();
     }
