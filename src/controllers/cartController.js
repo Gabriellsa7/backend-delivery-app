@@ -26,7 +26,6 @@ exports.addToCart = async (req, res) => {
     } else {
       // Add new product to cart
       const newCartItem = new Cart({
-        id: productId,
         productId,
         name,
         price,
@@ -45,6 +44,7 @@ exports.addToCart = async (req, res) => {
   }
 };
 
+// Function to update the quantity of an item in the cart
 exports.updateCartQuantity = async (req, res) => {
   const { productId, quantity } = req.body;
 
@@ -64,6 +64,8 @@ exports.updateCartQuantity = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Function to remove an item from the cart
 exports.removeFromCart = async (req, res) => {
   try {
     const { id } = req.params; // Get the item ID from the request parameters

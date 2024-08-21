@@ -15,7 +15,8 @@ app.use("/api", routes);
 //database connection
 // const dbURI = process.env.MONGO_URI;
 const dbURI =
-  "mongodb+srv://gabrielsantana:JESUSCRE123@deliveryapp.ham4oyn.mongodb.net/?retryWrites=true&w=majority&appName=DeliveryApp";
+  // "mongodb+srv://gabrielsantana:JESUSCRE123@deliveryapp.ham4oyn.mongodb.net/?retryWrites=true&w=majority&appName=DeliveryApp";
+  "mongodb+srv://gabrielsan:310713@cluster0.zkysw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 mongoose
   .connect(dbURI)
   .then(() => console.log("MongoDB connected..."))
